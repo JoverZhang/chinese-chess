@@ -4,11 +4,22 @@ import org.chinesechess.chess.Point;
 
 public abstract class CommandParser {
 
-    public void exec(String cmd) {
+    /**
+     * 执行命令
+     *
+     * @param cmd 命令
+     * @return 当执行命令 "退出" 时返回 true, 其余一律返回 false
+     */
+    public boolean exec(String cmd) {
         String[] params = cmd.split(" ");
 
+        // 退出 e.g: quit
+        if ("quit".equals(params[0])) {
+            Assert.assertEquals(1, params.length, "参数长度不为 1");
+            return true;
+        }
         // 查看棋盘 e.g: show
-        if ("show".equals(params[0])) {
+        else if ("show".equals(params[0])) {
             Assert.assertEquals(1, params.length, "参数长度不为 1");
             execShow();
         }
@@ -29,6 +40,7 @@ public abstract class CommandParser {
         else {
             throw new IllegalArgumentException("非法参数");
         }
+        return false;
     }
 
     /**
