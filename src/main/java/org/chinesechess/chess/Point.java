@@ -11,4 +11,8 @@ public class Point {
 
     public final int col;
 
+    public static Point of(int row, int col) {
+        return new Point(row, col);
+    }
+
 }
