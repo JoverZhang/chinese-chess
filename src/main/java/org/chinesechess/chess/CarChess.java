@@ -45,7 +45,6 @@ public class CarChess extends Chess {
             }
         }
 
-        System.out.println(steps);
         return steps;
     }
 
