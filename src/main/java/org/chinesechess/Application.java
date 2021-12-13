@@ -53,7 +53,7 @@ public class Application {
     private static void init(ChessBoard board) {
         board.putChess(new Point(0, 0), HorseChess.BLACK);
         board.putChess(new Point(0, 1), HorseChess.BLACK);
-        board.putChess(new Point(0, 2), HorseChess.BLACK);
+        board.putChess(new Point(0, 2), ElephantChess.BLACK);
         board.putChess(new Point(0, 3), HorseChess.BLACK);
         board.putChess(new Point(0, 4), HorseChess.BLACK);
         board.putChess(new Point(0, 5), HorseChess.BLACK);
@@ -74,7 +74,7 @@ public class Application {
         board.putChess(new Point(9, 3), HorseChess.RED);
         board.putChess(new Point(9, 4), HorseChess.RED);
         board.putChess(new Point(9, 5), HorseChess.RED);
-        board.putChess(new Point(9, 6), HorseChess.RED);
+        board.putChess(new Point(9, 6), ElephantChess.RED);
         board.putChess(new Point(9, 7), HorseChess.RED);
         board.putChess(new Point(9, 8), HorseChess.RED);
         board.putChess(new Point(7, 1), HorseChess.RED);
