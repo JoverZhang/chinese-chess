@@ -1,9 +1,7 @@
 package org.chinesechess;
 
 import org.chinesechess.board.ChessBoard;
-import org.chinesechess.chess.Chess;
-import org.chinesechess.chess.HorseChess;
-import org.chinesechess.chess.Point;
+import org.chinesechess.chess.*;
 import org.chinesechess.utils.CommandParser;
 
 import java.util.Scanner;
@@ -51,7 +49,7 @@ public class Application {
     }
 
     private static void init(ChessBoard board) {
-        board.putChess(new Point(0, 0), HorseChess.BLACK);
+        board.putChess(new Point(0, 0), CarChess.BLACK);
         board.putChess(new Point(0, 1), HorseChess.BLACK);
         board.putChess(new Point(0, 2), ElephantChess.BLACK);
         board.putChess(new Point(0, 3), HorseChess.BLACK);
@@ -59,7 +57,7 @@ public class Application {
         board.putChess(new Point(0, 5), HorseChess.BLACK);
         board.putChess(new Point(0, 6), HorseChess.BLACK);
         board.putChess(new Point(0, 7), HorseChess.BLACK);
-        board.putChess(new Point(0, 8), HorseChess.BLACK);
+        board.putChess(new Point(0, 8), CarChess.BLACK);
         board.putChess(new Point(2, 1), HorseChess.BLACK);
         board.putChess(new Point(2, 7), HorseChess.BLACK);
         board.putChess(new Point(3, 0), HorseChess.BLACK);
@@ -68,7 +66,7 @@ public class Application {
         board.putChess(new Point(3, 6), HorseChess.BLACK);
         board.putChess(new Point(3, 8), HorseChess.BLACK);
 
-        board.putChess(new Point(9, 0), HorseChess.RED);
+        board.putChess(new Point(9, 0), CarChess.RED);
         board.putChess(new Point(9, 1), HorseChess.RED);
         board.putChess(new Point(9, 2), HorseChess.RED);
         board.putChess(new Point(9, 3), HorseChess.RED);
@@ -76,7 +74,7 @@ public class Application {
         board.putChess(new Point(9, 5), HorseChess.RED);
         board.putChess(new Point(9, 6), ElephantChess.RED);
         board.putChess(new Point(9, 7), HorseChess.RED);
-        board.putChess(new Point(9, 8), HorseChess.RED);
+        board.putChess(new Point(9, 8), CarChess.RED);
         board.putChess(new Point(7, 1), HorseChess.RED);
         board.putChess(new Point(7, 7), HorseChess.RED);
         board.putChess(new Point(6, 0), HorseChess.RED);
