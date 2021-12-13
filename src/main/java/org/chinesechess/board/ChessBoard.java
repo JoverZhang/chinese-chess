@@ -82,8 +82,6 @@ public class ChessBoard {
         // 移动 | 吃棋
         putChess(to, chess);
         putChess(from, null);
-        // 交换持方
-        switchHolder();
         // 是否吃棋
         return tcExists;
     }
@@ -91,7 +89,7 @@ public class ChessBoard {
     /**
      * 交换持方
      */
-    private void switchHolder() {
+    public void switchHolder() {
         if (holder == ChessColorEnum.RED) {
             holder = ChessColorEnum.BLACK;
         } else if (holder == ChessColorEnum.BLACK) {

@@ -29,6 +29,8 @@ public class Application {
                 if (board.nextStep(from, to)) {
                     System.out.println("吃！！！");
                 }
+                // 交换持方
+                board.switchHolder();
                 board.printBoard();
             }
         };
