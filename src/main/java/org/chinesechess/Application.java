@@ -26,8 +26,9 @@ public class Application {
 
             @Override
             public void execMove(Point from, Point to) {
-                if (board.nextStep(from, to)) {
-                    System.out.println("吃！！！");
+                Chess deadChess = board.nextStep(from, to);
+                if (deadChess != null) {
+                    System.out.println("吃! 死亡的棋子为: " + deadChess.getChessName());
                 }
                 // 交换持方
                 board.switchHolder();

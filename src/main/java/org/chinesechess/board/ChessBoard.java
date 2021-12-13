@@ -55,9 +55,9 @@ public class ChessBoard {
      *
      * @param from 需要移动的棋子位置
      * @param to   需要移动的目标位置
-     * @return 是否吃棋
+     * @return 当有棋子被吃, 则返回该死亡的棋子, 否则返回 null
      */
-    public boolean nextStep(Point from, Point to) {
+    public Chess nextStep(Point from, Point to) {
         // 需要移动的棋子
         Chess chess = getChess(from);
         if (chess == null) {
@@ -73,17 +73,15 @@ public class ChessBoard {
         }
         // 需要移动的目标位置
         Chess target = getChess(to);
-        // 目标位置存在棋子
-        boolean tcExists = target != null;
         // 目标位置为己方棋子
-        if (tcExists && chess.getChessColor() == target.getChessColor()) {
+        if (target != null && chess.getChessColor() == target.getChessColor()) {
             throw new IllegalArgumentException("无法移动, 与目标棋颜色相同");
         }
         // 移动 | 吃棋
         putChess(to, chess);
         putChess(from, null);
-        // 是否吃棋
-        return tcExists;
+        // 返回目标位置的棋 (如果有)
+        return target;
     }
 
     /**
