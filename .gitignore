@@ -3,9 +3,4 @@
 /dist
 
 # CMake
-CMakeFiles
-Makefile
-*.cmake
-CMakeCache.txt
-/Testing
 /build
