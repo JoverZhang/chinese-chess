@@ -1,10 +1,12 @@
-#pragma once
+#ifndef INITTYPES_H
+#define INITTYPES_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 #include <sys/types.h>
 
-#include <iostream>
+#include <map>
+#include <ostream>
 #include <string>
 
 typedef int8_t i8;
@@ -15,20 +17,48 @@ typedef int32_t i32;
 typedef uint32_t u32;
 typedef int64_t i64;
 typedef uint64_t u64;
-
 typedef std::string String;
 
-void print(){};
+namespace common {
+
+enum TextColor {
+  kRedColor,
+  kBlackColor,
+};
+
+const static std::map<TextColor, String> kTextColorMap = {
+    {kRedColor, "\033[1;31m"},
+    {kBlackColor, "\033[0m"},
+};
+
+template<typename... ARGS>
+constexpr size_t va_len(ARGS &&... args) { return sizeof...(args); }
+
+void print() {};
+
 void println() { std::cout << std::endl; }
 
-template <typename T, typename... TAIL>
-void print(const T &t, TAIL... tail) {
-  std::cout << t << ' ';
-  print(tail...);
+template<typename T, typename... ARGS>
+void print(T &&arg, ARGS &&... args) {
+  std::cout << arg;
+  if (va_len(args...) == 0) return;
+  std::cout << ' ';
+  print(args...);
 }
 
-template <typename T, typename... TAIL>
-void println(const T &t, TAIL... tail) {
-  std::cout << t << ' ';
-  println(tail...);
+inline String recolor(const String &text, TextColor color) {
+  return kTextColorMap.at(color) + text + kTextColorMap.at(kBlackColor);
 }
+
+template<typename T, typename... ARGS>
+void println(T &&arg, ARGS &&... args) {
+  print(arg, args...);
+  println();
+}
+
+}
+
+using common::print;
+using common::println;
+
+#endif //INITTYPES_H
