@@ -1,6 +1,8 @@
 .history
 .vscode
+ .idea
 /dist
 
 # CMake
 /build
+cmake*
