@@ -20,6 +20,7 @@ enum ChessType {
   kKnight,
   kElephant,
   kMandarin,
+  kKing,
 };
 
 class Board;

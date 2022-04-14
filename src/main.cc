@@ -5,6 +5,7 @@
 #include "KnightChess.h"
 #include "ElephantChess.h"
 #include "MandarinChess.h"
+#include "KingChess.h"
 
 void print_table(BoardTable &table) {
   for (size_t i = 0; i < 10; i++) {
@@ -24,6 +25,7 @@ void print_table(BoardTable &table) {
       else if (type == kKnight) name = "馬";
       else if (type == kElephant) name = color == kRed ? "相" : "象";
       else if (type == kMandarin) name = "士";
+      else if (type == kKing) name = color == kRed ? "帥" : "将";
 
       if (color == kRed)
         name = common::recolor(name, common::kRedColor);
@@ -43,6 +45,8 @@ int main() {
   ElephantChess elephant_chess_blk{kBlk};
   MandarinChess mandarin_chess_red{kRed};
   MandarinChess mandarin_chess_blk{kBlk};
+  KingChess king_chess_red{kRed};
+  KingChess king_chess_blk{kBlk};
 
   Board board;
   BoardTable &table = board.get_table();
@@ -51,6 +55,7 @@ int main() {
   table[0][1] = &horse_chess_blk;
   table[0][2] = &elephant_chess_blk;
   table[0][3] = &mandarin_chess_blk;
+  table[0][4] = &king_chess_blk;
   table[0][5] = &mandarin_chess_blk;
   table[0][6] = &elephant_chess_blk;
   table[0][7] = &horse_chess_blk;
@@ -60,6 +65,7 @@ int main() {
   table[9][1] = &horse_chess_red;
   table[9][2] = &elephant_chess_red;
   table[9][3] = &mandarin_chess_red;
+  table[9][4] = &king_chess_red;
   table[9][5] = &mandarin_chess_red;
   table[9][6] = &elephant_chess_red;
   table[9][7] = &horse_chess_red;
