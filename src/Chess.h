@@ -17,8 +17,9 @@ enum ChessColor {
 
 enum ChessType {
   kRook,
-  kHorse,
+  kKnight,
   kElephant,
+  kMandarin,
 };
 
 class Board;
