@@ -19,6 +19,7 @@ enum ChessType {
   kEmpty,
   kCar,
   kHorse,
+  kElephant,
 };
 
 class Board;
