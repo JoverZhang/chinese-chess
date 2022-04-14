@@ -16,6 +16,7 @@ enum ChessColor {
 };
 
 enum ChessType {
+  kPawn,
   kCannon,
   kRook,
   kKnight,
