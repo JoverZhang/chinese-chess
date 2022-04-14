@@ -8,12 +8,12 @@ class PawnChess : public Chess {
   explicit PawnChess(ChessColor color) : Chess(kPawn, color) {}
 
   std::vector<Point> legal_next_steps(const Board &board,
-                                      Point &point) const override;
+                                      Point point) const override;
 
 };
 
 std::vector<Point> PawnChess::legal_next_steps(const Board &board,
-                                               Point &point) const {
+                                               Point point) const {
   return {};
 }
 

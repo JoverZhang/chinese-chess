@@ -8,12 +8,12 @@ class ElephantChess : public Chess {
   explicit ElephantChess(ChessColor color) : Chess(kElephant, color) {}
 
   std::vector<Point> legal_next_steps(const Board &board,
-                                      Point &point) const override;
+                                      Point point) const override;
 
 };
 
 std::vector<Point> ElephantChess::legal_next_steps(const Board &board,
-                                                   Point &point) const {
+                                                   Point point) const {
   return {};
 }
 #endif //CHINESE_CHESS_SRC_COMMON_ELEPHANTCHESS_H_

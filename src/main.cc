@@ -10,8 +10,8 @@
 #include "KingChess.h"
 
 void print_table(BoardTable &table) {
-  for (size_t i = 0; i < 10; i++) {
-    for (size_t j = 0; j < 9; j++) {
+  for (size_t i = kMinCol; i < kMaxCol; i++) {
+    for (size_t j = kMinRow; j < kMaxRow; j++) {
       Chess *chess = table[i][j];
       if (chess == nullptr) {
         String empty = "__";
@@ -93,7 +93,18 @@ int main() {
   table[9][7] = &horse_chess_red;
   table[9][8] = &rook_chess_red;
 
+  table[5][1] = &pawn_chess_red;
+
   print_table(table);
+
+  Chess *cannon = board.get_chess({2, 1});
+  const std::vector<Point> &steps = cannon->legal_next_steps(board, {2, 1});
+
+  println("===Result===");
+
+  for (auto[col, row] : steps) {
+    println((i32) col, (i32) row);
+  }
 
   return 0;
 }

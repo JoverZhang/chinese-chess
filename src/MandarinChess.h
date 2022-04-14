@@ -8,12 +8,12 @@ class MandarinChess : public Chess {
   explicit MandarinChess(ChessColor color) : Chess(kMandarin, color) {}
 
   std::vector<Point> legal_next_steps(const Board &board,
-                                      Point &point) const override;
+                                      Point point) const override;
 
 };
 
 std::vector<Point> MandarinChess::legal_next_steps(const Board &board,
-                                                   Point &point) const {
+                                                   Point point) const {
   return {};
 }
 

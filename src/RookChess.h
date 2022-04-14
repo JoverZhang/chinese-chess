@@ -8,12 +8,12 @@ class RookChess : public Chess {
   explicit RookChess(ChessColor color) : Chess(kRook, color) {}
 
   std::vector<Point> legal_next_steps(const Board &board,
-                                      Point &point) const override;
+                                      Point point) const override;
 
 };
 
 std::vector<Point> RookChess::legal_next_steps(const Board &board,
-                                               Point &point) const {
+                                               Point point) const {
   return {};
 }
 

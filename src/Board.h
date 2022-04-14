@@ -6,6 +6,8 @@
 
 typedef std::vector<std::vector<Chess *>> BoardTable;
 
+class Chess;
+
 class Board {
  public:
   explicit Board() {
@@ -16,6 +18,11 @@ class Board {
   };
 
   BoardTable &get_table() { return table; }
+
+  Chess *get_chess(Point point) const {
+    auto[col, row] = point;
+    return table[col][row];
+  }
 
  private:
   BoardTable table;

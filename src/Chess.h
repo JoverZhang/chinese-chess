@@ -8,7 +8,12 @@
 #include "tuple"
 
 // { col, row }
-typedef std::tuple<u8, u8> Point;
+typedef std::tuple<i32, i32> Point;
+
+const i32 kMinCol = 0;
+const i32 kMinRow = 0;
+const i32 kMaxCol = 10;
+const i32 kMaxRow = 9;
 
 enum ChessColor {
   kRed,
@@ -34,12 +39,12 @@ class Chess {
 
   virtual ~Chess() = default;
 
-  inline ChessType type() { return kType; }
+  inline ChessType type() const { return kType; }
 
-  inline ChessColor color() { return kColor; };
+  inline ChessColor color() const { return kColor; };
 
   virtual std::vector<Point> legal_next_steps(const Board &board,
-                                              Point &point) const = 0;
+                                              Point point) const = 0;
 
  private:
   const ChessType kType;
