@@ -19,41 +19,83 @@ typedef int64_t i64;
 typedef uint64_t u64;
 typedef std::string String;
 
+/**
+ * Define some Common tools
+ */
 namespace common {
-
-enum TextColor {
-  kRedColor,
-  kBlackColor,
-};
-
-const static std::map<TextColor, String> kTextColorMap = {
-    {kRedColor, "\033[1;31m"},
-    {kBlackColor, "\033[0m"},
-};
 
 template<typename... ARGS>
 constexpr size_t va_len(ARGS &&... args) { return sizeof...(args); }
 
-void print() {};
+/// empty print
+void print();
+/// print a parameter
+template<typename T>
+void print(T &&arg);
+/// print variable length parameters
+template<typename T, typename... ARGS>
+void print(T &&arg, ARGS &&... args);
+/// print tuple
+template<typename... T>
+void print(const std::tuple<T...> &tuple);
 
-void println() { std::cout << std::endl; }
+/// print \n
+void println();
+/// print variable length parameters and with a '\n'
+template<typename T, typename... ARGS>
+void println(T &&arg, ARGS &&... args);
+
+
+/// Definition
+
+void print() {}
+
+template<typename T>
+void print(T &&arg) {
+  std::cout << arg;
+}
+
+template<typename TUPLE, size_t... I>
+void print_tuple(const TUPLE &tuple, std::index_sequence<I...>) {
+  print("(");
+  (..., (print(I == 0 ? "" : ", ", std::get<I>(tuple))));
+  print(")");
+}
+template<typename... T>
+void print(const std::tuple<T...> &tuple) {
+  print_tuple(tuple, std::make_index_sequence<sizeof...(T)>());
+}
 
 template<typename T, typename... ARGS>
 void print(T &&arg, ARGS &&... args) {
-  std::cout << arg;
+  print(arg);
   if (va_len(args...) == 0) return;
-  std::cout << ' ';
   print(args...);
 }
 
-inline String recolor(const String &text, TextColor color) {
-  return kTextColorMap.at(color) + text + kTextColorMap.at(kBlackColor);
+void println() {
+  std::cout << std::endl;
 }
 
 template<typename T, typename... ARGS>
 void println(T &&arg, ARGS &&... args) {
   print(arg, args...);
   println();
+}
+
+
+/// Text recolor
+
+enum TextColor {
+  kRedColor,
+  kBlackColor,
+};
+const static std::map<TextColor, String> kTextColorMap = {
+    {kRedColor, "\033[1;31m"},
+    {kBlackColor, "\033[0m"},
+};
+inline String recolor(const String &text, TextColor color) {
+  return kTextColorMap.at(color) + text + kTextColorMap.at(kBlackColor);
 }
 
 }
