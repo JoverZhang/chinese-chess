@@ -6,8 +6,9 @@
 #include <sys/types.h>
 
 #include <map>
-#include <ostream>
 #include <string>
+#include <sstream>
+#include <optional>
 
 typedef int8_t i8;
 typedef uint8_t u8;
@@ -83,6 +84,21 @@ void println(T &&arg, ARGS &&... args) {
   println();
 }
 
+template<typename T>
+void println_c(T &container) {
+  if (container.size() == 0) {
+    println("[]");
+    return;
+  }
+  std::stringstream buf;
+  buf << '[';
+  for (auto v : container) {
+    buf << v << ", ";
+  }
+  buf.seekp(-2, std::stringstream::cur);
+  buf << ']';
+  println(buf.str());
+}
 
 /// Text recolor
 
@@ -97,6 +113,42 @@ const static std::map<TextColor, String> kTextColorMap = {
 inline String recolor(const String &text, TextColor color) {
   return kTextColorMap.at(color) + text + kTextColorMap.at(kBlackColor);
 }
+
+/// String Tools
+
+template<typename T>
+T from_string(const String &str) {
+  std::istringstream is(str);
+  T v;
+  is >> v;
+  return v;
+}
+
+/// Result
+
+template<typename T, typename E>
+class Result {
+ public:
+  static Result<T, E> Ok(T t) { return Result<T, E>(t, std::nullopt, true); }
+  static Result<T, E> Err(E e) { return Result<T, E>(std::nullopt, e, false); }
+
+  explicit Result(std::optional<T> ok, std::optional<E> err, bool is_ok) :
+      kOk(ok), kErr(err), kIsOk(is_ok) {}
+  bool is_ok() { return kIsOk; }
+  bool is_err() { return !is_ok(); }
+  inline std::optional<T> ok() { return kOk; }
+  inline std::optional<E> err() { return kErr; }
+
+ private:
+  const std::optional<T> kOk;
+  const std::optional<E> kErr;
+  const bool kIsOk;
+};
+
+template<typename T, typename E>
+constexpr Result<T, E> Ok(T t) { return Result<T, E>::Ok(t); }
+template<typename T, typename E>
+constexpr Result<T, E> Err(E e) { return Result<T, E>::Err(e); }
 
 }
 
