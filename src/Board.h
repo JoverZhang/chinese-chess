@@ -19,7 +19,7 @@ class Board {
 
   BoardTable &get_table() { return table; }
 
-  Chess *get_chess(Point point) const {
+  const Chess *get_chess(Point point) const {
     auto[col, row] = point;
     return table[col][row];
   }

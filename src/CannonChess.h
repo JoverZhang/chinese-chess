@@ -20,7 +20,7 @@ std::vector<Point> CannonChess::legal_next_steps(const Board &board,
   auto[col, row] = point;
   int i;
   for (i = col + 1; i < kMaxCol; i++) {
-    Chess *chess = board.get_chess({i, row});
+    const Chess *chess = board.get_chess({i, row});
     if (chess != nullptr) {
       break;
     }
@@ -28,7 +28,7 @@ std::vector<Point> CannonChess::legal_next_steps(const Board &board,
   }
   i++;
   for (; i < kMaxCol; i++) {
-    Chess *chess = board.get_chess({i, row});
+    const Chess *chess = board.get_chess({i, row});
     if (chess != nullptr) {
       if (Chess::color() != chess->color()) {
         steps.emplace_back(i, row);

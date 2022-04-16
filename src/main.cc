@@ -97,13 +97,13 @@ int main() {
 
   print_table(table);
 
-  Chess *cannon = board.get_chess({2, 1});
+  const Chess *cannon = board.get_chess({2, 1});
   const std::vector<Point> &steps = cannon->legal_next_steps(board, {2, 1});
 
   println("===Result===");
 
   for (auto[col, row] : steps) {
-    println((i32) col, (i32) row);
+    print( steps[0], " ");
   }
 
   return 0;
