@@ -36,9 +36,6 @@ void print(T &&arg);
 /// print variable length parameters
 template<typename T, typename... ARGS>
 void print(T &&arg, ARGS &&... args);
-/// print tuple
-template<typename... T>
-void print(const std::tuple<T...> &tuple);
 
 /// print \n
 void println();
@@ -46,6 +43,11 @@ void println();
 template<typename T, typename... ARGS>
 void println(T &&arg, ARGS &&... args);
 
+/// print tuple
+template<typename... T>
+void print_tuple(const std::tuple<T...> &tuple);
+template<typename... T>
+void println_tuple(const std::tuple<T...> &tuple);
 
 /// Definition
 
@@ -54,17 +56,6 @@ void print() {}
 template<typename T>
 void print(T &&arg) {
   std::cout << arg;
-}
-
-template<typename TUPLE, size_t... I>
-void print_tuple(const TUPLE &tuple, std::index_sequence<I...>) {
-  print("(");
-  (..., (print(I == 0 ? "" : ", ", std::get<I>(tuple))));
-  print(")");
-}
-template<typename... T>
-void print(const std::tuple<T...> &tuple) {
-  print_tuple(tuple, std::make_index_sequence<sizeof...(T)>());
 }
 
 template<typename T, typename... ARGS>
@@ -98,6 +89,22 @@ void println_c(T &container) {
   buf.seekp(-2, std::stringstream::cur);
   buf << ']';
   println(buf.str());
+}
+
+template<typename TUPLE, size_t... I>
+void print_tuple(const TUPLE &tuple, std::index_sequence<I...>) {
+  print("(");
+  (..., (print(I == 0 ? "" : ", ", std::get<I>(tuple))));
+  print(")");
+}
+template<typename... T>
+void print_tuple(const std::tuple<T...> &tuple) {
+  print_tuple(tuple, std::make_index_sequence<sizeof...(T)>());
+}
+template<typename... T>
+void println_tuple(const std::tuple<T...> &tuple) {
+  print_tuple(tuple);
+  println();
 }
 
 /// Text recolor
@@ -134,10 +141,10 @@ class Result {
 
   explicit Result(std::optional<T> ok, std::optional<E> err, bool is_ok) :
       kOk(ok), kErr(err), kIsOk(is_ok) {}
-  bool is_ok() { return kIsOk; }
-  bool is_err() { return !is_ok(); }
-  inline std::optional<T> ok() { return kOk; }
-  inline std::optional<E> err() { return kErr; }
+  bool is_ok() const { return kIsOk; }
+  bool is_err() const { return !is_ok(); }
+  inline std::optional<T> ok() const { return kOk; }
+  inline std::optional<E> err() const { return kErr; }
 
  private:
   const std::optional<T> kOk;
