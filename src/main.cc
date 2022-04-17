@@ -1,4 +1,7 @@
 #include <iostream>
+#include <iterator>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "Board.h"
 #include "PawnChess.h"
@@ -9,34 +12,99 @@
 #include "MandarinChess.h"
 #include "KingChess.h"
 
+using common::Result, common::Ok, common::Err;
+
+std::vector<String> split(String &str, const String &pred) {
+  std::vector<String> vec;
+  boost::split(vec, str, boost::is_any_of(pred), boost::token_compress_on);
+  return vec;
+}
+
 void print_table(BoardTable &table) {
+  println("  ====================================");
+  println("+  0   1   2   3   4   5   6   7   8");
   for (size_t i = kMinCol; i < kMaxCol; i++) {
+    print(i, ": ");
     for (size_t j = kMinRow; j < kMaxRow; j++) {
       Chess *chess = table[i][j];
       if (chess == nullptr) {
         String empty = "__";
         if (i > 4) empty = common::recolor(empty, common::kRedColor);
-        print(empty, '\t');
+        print(empty, "  ");
         continue;
       }
-      ChessType type = chess->type();
-      ChessColor color = chess->color();
 
-      String name;
-      if (type == kPawn) name = color == kRed ? "兵" : "卒";
-      else if (type == kCannon) name = "炮";
-      else if (type == kRook) name = "車";
-      else if (type == kKnight) name = "馬";
-      else if (type == kElephant) name = color == kRed ? "相" : "象";
-      else if (type == kMandarin) name = "士";
-      else if (type == kKing) name = color == kRed ? "帥" : "将";
-
-      if (color == kRed)
+      String name = chess->name();
+      if (chess->color() == kRed)
         name = common::recolor(name, common::kRedColor);
-
-      print(name, '\t');
+      print(name, "  ");
     }
     println();
+  }
+  println("  ====================================");
+}
+
+Result<Point, String> parse_point(String &str) {
+  std::vector<String> args = split(str, ",");
+  if (args.size() != 2 || args[0].empty() || args[1].empty())
+    return Err<Point, String>("Invalid point");
+  i32 col = common::from_string<i32>(args[0]);
+  if (col < kMinCol || kMaxCol <= col) return Err<Point, String>("Invalid col");
+  i32 row = common::from_string<i32>(args[1]);
+  if (row < kMinRow || kMaxRow <= row) return Err<Point, String>("Invalid row");
+  return Ok<Point, String>({col, row});
+}
+
+Result<const Chess *, String> do_move(Board &board, std::vector<String> &args) {
+  if (args.size() != 3) return Err<const Chess *, String>("Invalid input");
+  auto from = parse_point(args[1]);
+  if (from.is_err()) return Err<const Chess *, String>(from.err().value());
+  auto to = parse_point(args[2]);
+  if (to.is_err()) return Err<const Chess *, String>(to.err().value());
+
+  const Chess *source = board.get_chess(from.ok().value());
+  if (source == nullptr)
+    return Err<const Chess *, String>("Chess does not exist");
+  if (source->color() != board.holder())
+    return Err<const Chess *, String>("Holder mismatch");
+
+  const Chess *target = board.get_chess(to.ok().value());
+  board.put_chess(from.ok().value(), nullptr);
+  board.put_chess(to.ok().value(), const_cast<Chess *>(source));
+
+  return Ok<const Chess *, String>(target);
+}
+
+void start_game(Board &board) {
+  String line;
+  std::vector<String> args;
+  for (;;) {
+    print_table(board.table());
+    String holder_name = board.holder() == kRed ?
+                         common::recolor("Red", common::kRedColor) : "Black";
+    print("Holder[", holder_name, "]: ");
+    std::getline(std::cin, line);
+    args = split(line, "\t ");
+
+    if (args[0] == "quit") {
+      break;
+    } else if (args[0] == "move") {
+      Result<const Chess *, String> result = do_move(board, args);
+      if (result.is_err()) {
+        println(common::recolor("Err: " + result.err().value(),
+                                common::kRedColor));
+        continue;
+      }
+      if (result.ok().has_value()) {
+        const Chess *chess = result.ok().value();
+        String name = chess->name();
+        if (chess->color() == kRed)
+          name = common::recolor(name, common::kRedColor);
+        println("Be eaten: ", name);
+      }
+      // Exchange holder
+      board.set_holder(board.holder() == kRed ? kBlk : kRed);
+    }
   }
 }
 
@@ -57,7 +125,7 @@ int main() {
   KingChess king_chess_blk{kBlk};
 
   Board board;
-  BoardTable &table = board.get_table();
+  BoardTable &table = board.table();
 
   table[3][0] = &pawn_chess_blk;
   table[3][2] = &pawn_chess_blk;
@@ -93,18 +161,7 @@ int main() {
   table[9][7] = &horse_chess_red;
   table[9][8] = &rook_chess_red;
 
-  table[5][1] = &pawn_chess_red;
-
-  print_table(table);
-
-  const Chess *cannon = board.get_chess({2, 1});
-  const std::vector<Point> &steps = cannon->legal_next_steps(board, {2, 1});
-
-  println("===Result===");
-
-  for (auto[col, row] : steps) {
-    print( steps[0], " ");
-  }
+  start_game(board);
 
   return 0;
 }

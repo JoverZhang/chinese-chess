@@ -43,6 +43,18 @@ class Chess {
 
   inline ChessColor color() const { return kColor; };
 
+  inline String name() const {
+    String name;
+    if (kType == kPawn) name = kColor == kRed ? "兵" : "卒";
+    else if (kType == kCannon) name = "炮";
+    else if (kType == kRook) name = "車";
+    else if (kType == kKnight) name = "馬";
+    else if (kType == kElephant) name = kColor == kRed ? "相" : "象";
+    else if (kType == kMandarin) name = "士";
+    else if (kType == kKing) name = kColor == kRed ? "帥" : "将";
+    return name;
+  }
+
   virtual std::vector<Point> legal_next_steps(const Board &board,
                                               Point point) const = 0;
 
