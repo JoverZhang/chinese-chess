@@ -46,28 +46,52 @@ void print_table(BoardTable &table) {
 
 Result<Point, String> parse_point(String &str) {
   std::vector<String> args = split(str, ",");
-  if (args.size() != 2 || args[0].empty() || args[1].empty())
+  if (args.size() != 2 || args[0].empty() || args[1].empty()) {
     return Err<Point, String>("Invalid point");
+  }
   i32 col = common::from_string<i32>(args[0]);
-  if (col < kMinCol || kMaxCol <= col) return Err<Point, String>("Invalid col");
+  if (col < kMinCol || kMaxCol <= col) {
+    return Err<Point, String>("Invalid col");
+  }
   i32 row = common::from_string<i32>(args[1]);
-  if (row < kMinRow || kMaxRow <= row) return Err<Point, String>("Invalid row");
+  if (row < kMinRow || kMaxRow <= row) {
+    return Err<Point, String>("Invalid row");
+  }
   return Ok<Point, String>({col, row});
 }
 
-Result<const Chess *, String> do_move(Board &board, std::vector<String> &args) {
-  if (args.size() != 3) return Err<const Chess *, String>("Invalid input");
-  auto from = parse_point(args[1]);
-  if (from.is_err()) return Err<const Chess *, String>(from.err().value());
-  auto to = parse_point(args[2]);
-  if (to.is_err()) return Err<const Chess *, String>(to.err().value());
+Result<const Chess *, String> handler_move(Board &board,
+                                           std::vector<String> &args) {
+  if (args.size() != 3) {
+    return Err<const Chess *, String>("Invalid input");
+  }
+  Result<Point, String> from = parse_point(args[1]);
+  if (from.is_err()) {
+    return Err<const Chess *, String>(from.err().value());
+  }
+  Result<Point, String> to = parse_point(args[2]);
+  if (to.is_err()) {
+    return Err<const Chess *, String>(to.err().value());
+  }
 
+  // Get source chess
   const Chess *source = board.get_chess(from.ok().value());
-  if (source == nullptr)
+  if (source == nullptr) {
     return Err<const Chess *, String>("Chess does not exist");
-  if (source->color() != board.holder())
+  }
+  if (source->color() != board.holder()) {
     return Err<const Chess *, String>("Holder mismatch");
+  }
 
+  // Check target point
+  const std::vector<Point> &next_steps =
+      source->legal_next_steps(board, from.ok().value());
+  if (std::none_of(next_steps.begin(), next_steps.end(),
+                   [&](Point p) { return p == to.ok().value(); })) {
+    return Err<const Chess *, String>("Illegal move");
+  }
+
+  // do move
   const Chess *target = board.get_chess(to.ok().value());
   board.put_chess(from.ok().value(), nullptr);
   board.put_chess(to.ok().value(), const_cast<Chess *>(source));
@@ -82,20 +106,22 @@ void start_game(Board &board) {
     print_table(board.table());
     String holder_name = board.holder() == kRed ?
                          common::recolor("Red", common::kRedColor) : "Black";
-    print("Holder[", holder_name, "]: ");
+    print("Holder is ", holder_name, ": ");
     std::getline(std::cin, line);
     args = split(line, "\t ");
 
     if (args[0] == "quit") {
       break;
-    } else if (args[0] == "move") {
-      Result<const Chess *, String> result = do_move(board, args);
+    }
+      // Handler move
+    else if (args[0] == "move") {
+      Result<const Chess *, String> result = handler_move(board, args);
       if (result.is_err()) {
         println(common::recolor("Err: " + result.err().value(),
                                 common::kRedColor));
         continue;
       }
-      if (result.ok().has_value()) {
+      if (result.ok().value() != nullptr) {
         const Chess *chess = result.ok().value();
         String name = chess->name();
         if (chess->color() == kRed)
